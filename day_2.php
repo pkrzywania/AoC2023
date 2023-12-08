@@ -12,16 +12,16 @@ if ($file) {
 
     while (($fileLine = fgets($file)) !== false) {
 
-        //echo $fileLine;
         $canSum = true;
         $gameInfo = explode(':', $fileLine);
         $gameId = intval(explode(' ', $gameInfo[0])[1]);
 
-        //echo 'Gra id: ' . $gameId . "\n";
-
         $cubesDraw = explode(';', $gameInfo[1]);
 
-        //echo "gra " . $gameId . "losowania: \n"; 
+        $maxRed = 0;
+        $maxGreen = 0;
+        $maxBlue = 0;
+
         foreach ($cubesDraw as $draw) {
             $drawResults = explode(',', $draw);
 
@@ -29,24 +29,20 @@ if ($file) {
                 $result = trim($result);
                 $number = explode (' ', $result)[0];
                 $color = explode (' ', $result)[1];
-                //echo "kolor: " . $color . ", wartosc: " . $number . "\n";
-                if (($color === 'red' && $number > $maxRedCubes) ||
-                    ($color === 'green' && $number > $maxGreenCubes) ||
-                    ($color === 'blue' && $number > $maxBlueCubes)) {
-                    $canSum = false;
+                if ($color === 'red' && $number > $maxRed) {
+                    $maxRed = $number;
+                } elseif ($color === 'green' && $number > $maxGreen) {
+                    $maxGreen = $number;
+                } elseif ($color === 'blue' && $number > $maxBlue) {
+                    $maxBlue = $number;
                 }
             }
         }
 
-        if ($canSum) {
-            $idsSum += $gameId;
-        } else {
-            echo $fileLine;
-        }
+        $idsSum += $maxRed * $maxBlue * $maxGreen;
     }
 
     echo "sum: " . $idsSum;
-
 }
 
 fclose ($file);
